@@ -31,18 +31,18 @@ class IntroScreen extends StatelessWidget {
             const Text(
               'Welcome to Slide Puzzle!',
               style: TextStyle(
-                fontSize: 24.0,
+                fontSize: 25.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 16.0),
+            const SizedBox(height: 19.0),
             const Text(
               'To begin, select a difficulty level:',
               style: TextStyle(
                 fontSize: 18.0,
               ),
             ),
-            const SizedBox(height: 16.0),
+            const SizedBox(height: 19.0),
             DropdownButton(
               value: '3x3',
               items: [
@@ -59,10 +59,6 @@ class IntroScreen extends StatelessWidget {
                   child: const Text('5x5'),
                 ),
               ],
-              onChanged: (value) {
-                Navigator.pushReplacementNamed(context, '/game',
-                    arguments: int.parse(value.toString().split('x')[0]));
-              },
             ),
           ],
         ),
@@ -235,7 +231,7 @@ class _SlidePuzzleState extends State<SlidePuzzle> {
                     child: Text(
                       puzzleTiles[index] != -1 ? '${puzzleTiles[index]}' : '',
                       style: const TextStyle(
-                        fontSize: 32.0,
+                        fontSize: 30.0,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -244,7 +240,7 @@ class _SlidePuzzleState extends State<SlidePuzzle> {
               );
             },
           ),
-          const SizedBox(height: 16.0),
+          const SizedBox(height: 17.0),
           ElevatedButton(
             onPressed: shufflePuzzle,
             child: const Text('Shuffle'),
