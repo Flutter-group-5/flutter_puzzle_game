@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:sample_gr_pr/screens/slide_puzzle.dart';
+import 'home_page.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {s
+  Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Slide Puzzle',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: const SlidePuzzleScreen(),
+      home: const HomePage(),
     );
   }
 }
