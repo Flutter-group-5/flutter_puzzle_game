@@ -3,74 +3,19 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 void main() {
   runApp(MaterialApp(
     initialRoute: '/',
     routes: {
-      '/': (_) => IntroScreen(),
-      '/game': (_) => SlidePuzzle(),
+      '/': (_) => const SlidePuzzle(),
     },
   ));
 }
 
-class IntroScreen extends StatelessWidget {
-  const IntroScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Slide Puzzle'),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Welcome to Slide Puzzle!',
-              style: TextStyle(
-                fontSize: 25.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 19.0),
-            const Text(
-              'To begin, select a difficulty level:',
-              style: TextStyle(
-                fontSize: 18.0,
-              ),
-            ),
-            const SizedBox(height: 19.0),
-            DropdownButton(
-              value: '3x3',
-              items: [
-                DropdownMenuItem(
-                  value: '3x3',
-                  child: const Text('3x3'),
-                ),
-                DropdownMenuItem(
-                  value: '4x4',
-                  child: const Text('4x4'),
-                ),
-                DropdownMenuItem(
-                  value: '5x5',
-                  child: const Text('5x5'),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class SlidePuzzle extends StatefulWidget {
-  final int gridSize;
-
-  const SlidePuzzle({Key? key, this.gridSize = 3}) : super(key: key);
+  const SlidePuzzle({Key? key}) : super(key: key);
 
   @override
   _SlidePuzzleState createState() => _SlidePuzzleState();
@@ -82,13 +27,12 @@ class _SlidePuzzleState extends State<SlidePuzzle> {
   late Timer _timer;
   int _start = 0;
   bool _solved = false;
-  late int _gridSize;
+  final int _gridSize = 3;
   late double _tileSize;
 
   @override
   void initState() {
     super.initState();
-    _gridSize = widget.gridSize;
     initializePuzzle();
     startTimer();
   }
@@ -110,6 +54,10 @@ class _SlidePuzzleState extends State<SlidePuzzle> {
       puzzleTiles[i] = puzzleTiles[j];
       puzzleTiles[j] = temp;
     }
+
+    // Find the index of the empty tile
+    emptyTileIndex = puzzleTiles.indexOf(-1);
+
     setState(() {});
   }
 
@@ -161,9 +109,8 @@ class _SlidePuzzleState extends State<SlidePuzzle> {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                Navigator.pop(context);
               },
-              child: const Text('Back to Menu'),
+              child: const Text('OK'),
             ),
           ],
         ),
@@ -213,26 +160,33 @@ class _SlidePuzzleState extends State<SlidePuzzle> {
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: _gridSize,
+              childAspectRatio: 1.0,
             ),
             itemCount: puzzleTiles.length,
             itemBuilder: (BuildContext context, int index) {
               return GestureDetector(
-                onTap: () => moveTile(index),
-                child: Container(
-                  width: _tileSize,
-                  height: _tileSize,
-                  decoration: BoxDecoration(
-                    color: puzzleTiles[index] == -1
-                        ? Colors.white
-                        : Colors.grey[300],
-                    border: Border.all(),
-                  ),
-                  child: Center(
-                    child: Text(
-                      puzzleTiles[index] != -1 ? '${puzzleTiles[index]}' : '',
-                      style: const TextStyle(
-                        fontSize: 30.0,
-                        fontWeight: FontWeight.bold,
+                onTap: () {
+                  moveTile(index);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: puzzleTiles[index] == -1
+                          ? Colors.grey[300]
+                          : Colors.blue[600],
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(8.0),
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        puzzleTiles[index] == -1 ? '' : '${puzzleTiles[index]}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
@@ -240,19 +194,24 @@ class _SlidePuzzleState extends State<SlidePuzzle> {
               );
             },
           ),
-          const SizedBox(height: 17.0),
+          SizedBox(
+            height: _tileSize * 0.5,
+          ),
           ElevatedButton(
             onPressed: shufflePuzzle,
-            child: const Text('Shuffle'),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Text(
+                'Shuffle',
+                style: TextStyle(
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
           ),
         ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _timer.cancel();
-    super.dispose();
   }
 }
